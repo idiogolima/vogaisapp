@@ -6,52 +6,66 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
 
     <!-- Link Swiper's CSS -->
-	<script async src="http://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- vogaisapp -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-2851245119366385"
-     data-ad-slot="7280203746"
-     data-ad-format="auto"></ins>
-<script>
-(adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+	
     <link rel="stylesheet" href="swiper.min.css">
-<script language="javascript" type="text/javascript">
-function playSound(soundfile) {
-document.getElementById("dummy").innerHTML=document.getElementById("dummy").innerHTML +
-"<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
-}
-</script>
+	<script src="examples.js"></script>
+	<script type="text/javascript" src="soundjs-NEXT.combined.js"></script>
+    <script id="editable">
+	var preload;
 
-<script language="javascript" type="text/javascript">
-function playSound2(soundfile) {
-document.getElementById("dummy2").innerHTML=document.getElementById("dummy2").innerHTML +
-"<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
-}
-</script>
+	function init() {
+		//if (!createjs.Sound.initializeDefaultPlugins()) {
+		//	document.getElementById("error").style.display = "block";
+		//	document.getElementById("content").style.display = "none";
+		//	return;
+		//}
 
-<script language="javascript" type="text/javascript">
-function playSound3(soundfile) {
-document.getElementById("dummy3").innerHTML=document.getElementById("dummy3").innerHTML +
-"<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
-}
-</script>
+		//examples.showDistractor("content");
+		var assetsPath = "sounds/";
+		var sounds = [
+			{src: "a.wav", id: 1},
+			{src: "e.wav", id: 2},
+			{src: "i.wav", id: 3},
 
-<script language="javascript" type="text/javascript">
-function playSound4(soundfile) {
-document.getElementById("dummy4").innerHTML=document.getElementById("dummy4").innerHTML +
-"<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
-}
-</script>
+			{src: "o.wav", id: 4},
+			{src: "u.wav", id: 5},
+			{src: "u.wav", id: 6},
 
-<script language="javascript" type="text/javascript">
-function playSound5(soundfile) {
-document.getElementById("dummy5").innerHTML=document.getElementById("dummy5").innerHTML +
-"<embed src=\""+soundfile+"\" hidden=\"true\" autostart=\"true\" loop=\"false\" />";
-}
+			
+		];
+
+		createjs.Sound.alternateExtensions = ["mp3"];	// add other extensions to try loading if the src file extension is not supported
+		createjs.Sound.addEventListener("fileload", createjs.proxy(soundLoaded, this)); // add an event listener for when load is completed
+		createjs.Sound.registerSounds(sounds, assetsPath);
+	}
+
+	function soundLoaded(event) {
+		//examples.hideDistractor();
+		var div = document.getElementById(event.id);
+		//div.style.backgroundImage = "url('audioButtonSheet.png')";
+	}
+
+	function stop() {
+		if (preload != null) {
+			preload.close();
+		}
+		createjs.Sound.stop();
+	}
+
+	function playSound(target) {
+		//Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
+		var instance = createjs.Sound.play(target.id);
+		if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) {
+			return;
+		}
+		//target.className = "gridBox active";
+		//instance.addEventListener("complete", function (instance) {
+		//	target.className = "gridBox";
+		//});
+	}
 </script>
-    <!-- Demo styles -->
+	
+	<!-- Demo styles -->
     <style>
     html, body {
         position: relative;
@@ -90,33 +104,33 @@ document.getElementById("dummy5").innerHTML=document.getElementById("dummy5").in
     }
     </style>
 </head>
-<body>
+<body onload="init();">
     <!-- Swiper -->
     <div class="swiper-container">
         <div class="swiper-wrapper">
-            <div class="swiper-slide" id="dummy" onclick="playSound('sounds/a.wav');" >
+            <div class="swiper-slide" id="1" onclick="playSound(this)" >
                 <!-- Required swiper-lazy class and image source specified in data-src attribute -->
 			<img data-src="imgs/a.jpg" class="swiper-lazy"/>
 
 				<!-- Preloader image -->
             <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="dummy2" onclick="playSound2('sounds/e.wav');">
+            <div class="swiper-slide" id="2" onclick="playSound(this)">
            
 
            <img data-src="imgs/e.jpg" class="swiper-lazy"/>
 							
                 <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="dummy3" onclick="playSound3('sounds/i.wav');">
+            <div class="swiper-slide" id="3" onclick="playSound(this)">
                 <img data-src="imgs/i.jpg" class="swiper-lazy">
                 <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="dummy4" onclick="playSound4('sounds/o.wav');">
+            <div class="swiper-slide" id="4" onclick="playSound(this)">
                 <img data-src="imgs/o.jpg" class="swiper-lazy">
                 <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="dummy5" onclick="playSound5('sounds/u.wav');">
+            <div class="swiper-slide" id="5" onclick="playSound(this)">
                 <img data-src="imgs/u.jpg" class="swiper-lazy">
                 <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
