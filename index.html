@@ -8,9 +8,9 @@
     <!-- Link Swiper's CSS -->
 	
     <link rel="stylesheet" href="js/swiper.min.css">
-	<script src="js/examples.js"></script>
-	<script src="js/soundjs-0.6.1.min.js"></script> 
-	<script src="js/soundjs-NEXT.min.js" > </script>
+    <script src="js/examples.js"></script>
+    <script src="js/soundjs-0.6.1.min.js"></script> 
+    <script src="js/soundjs-NEXT.min.js"></script>
     <script id="editable">
 	var preload;
 
@@ -36,11 +36,11 @@
 		];
 
 		createjs.Sound.alternateExtensions = ["wav"];	// add other extensions to try loading if the src file extension is not supported
-		createjs.Sound.addEventListener("fileload", handleFileLoad); // add an event listener for when load is completed
+		createjs.Sound.addEventListener("fileload", createjs.proxy(soundLoaded, this)); // add an event listener for when load is completed
 		createjs.Sound.registerSounds(sounds, assetsPath);
 	}
 
-	function handleFileLoad(event) {
+	function soundLoaded(event) {
 		//examples.hideDistractor();
 		var div = document.getElementById(event.id);
 		//div.style.backgroundImage = "url('audioButtonSheet.png')";
