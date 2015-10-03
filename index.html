@@ -46,19 +46,19 @@
 		//div.style.backgroundImage = "url('audioButtonSheet.png')";
 	}
 
-	function stop() {
-		if (preload != null) {
-			preload.close();
-		}
-		createjs.Sound.stop();
-	}
+	//function stop() {
+	//	if (preload != null) {
+	//		preload.close();
+	//	}
+	//	createjs.Sound.stop();
+	//}
 
 	function playSound(target) {
 		//Play the sound: play (src, interrupt, delay, offset, loop, volume, pan)
 		var instance = createjs.Sound.play(target.id);
-		if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) {
-			return;
-		}
+		//if (instance == null || instance.playState == createjs.Sound.PLAY_FAILED) {
+		//	return;
+		//}
 		//target.className = "gridBox active";
 		//instance.addEventListener("complete", function (instance) {
 		//	target.className = "gridBox";
@@ -110,31 +110,30 @@
     <div class="swiper-container">
         <div class="swiper-wrapper">
             <div class="swiper-slide" id="1" onclick="playSound(this)" >
-                <!-- Required swiper-lazy class and image source specified in data-src attribute -->
-			<img data-src="imgs/a.jpg" class="swiper-lazy"/>
-
-				<!-- Preloader image -->
-            <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+				<img data-src="imgs/a.jpg" class="swiper-lazy"/>
+				<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
+			
             <div class="swiper-slide" id="2" onclick="playSound(this)">
-           
-
-           <img data-src="imgs/e.jpg" class="swiper-lazy"/>
-							
-                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+				<img data-src="imgs/e.jpg" class="swiper-lazy"/>
+				<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="3" onclick="playSound(this)">
-                <img data-src="imgs/i.jpg" class="swiper-lazy">
-                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+            
+			<div class="swiper-slide" id="3" onclick="playSound(this)">
+				<img data-src="imgs/i.jpg" class="swiper-lazy">
+				<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="4" onclick="playSound(this)">
-                <img data-src="imgs/o.jpg" class="swiper-lazy">
-                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+            
+			<div class="swiper-slide" id="4" onclick="playSound(this)">
+				<img data-src="imgs/o.jpg" class="swiper-lazy">
+				<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
-            <div class="swiper-slide" id="5" onclick="playSound(this)">
-                <img data-src="imgs/u.jpg" class="swiper-lazy">
-                <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
+            
+			<div class="swiper-slide" id="5" onclick="playSound(this)">
+				<img data-src="imgs/u.jpg" class="swiper-lazy">
+				<div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>
             </div>
+			
            <!-- <div class="swiper-slide">-->
             <!--    <img data-src="http://lorempixel.com/1600/1200/nature/6" class="swiper-lazy">-->
            <!--     <div class="swiper-lazy-preloader swiper-lazy-preloader-white"></div>-->
@@ -148,6 +147,8 @@
         <div class="swiper-button-prev swiper-button-white"></div>
     </div>
 
+	
+	
     <!-- Swiper JS -->
     <script src="js/swiper.min.js"></script>
 
@@ -159,10 +160,10 @@
         pagination: '.swiper-pagination',
         paginationClickable: true,
         // Disable preloading of all images
-        preloadImages: true,
+        preloadImages: false,
         // Enable lazy loading
         lazyLoading: true,
-	loop: true
+		loop: true
     });
     </script>
 	
