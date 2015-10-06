@@ -6,7 +6,7 @@ body {
 }
 
 h1 {
-    text-shadow: 0 -2px 0 #999;
+    text-shadow: 0 2px 0 #999;
     text-align: center;
     font-size: 40px;
     padding: 0;
