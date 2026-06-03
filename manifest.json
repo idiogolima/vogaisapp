@@ -1,0 +1,22 @@
+{
+  "name": "VogaisApp - Brincar e Aprender",
+  "short_name": "VogaisApp",
+  "description": "Um aplicativo interativo para ensinar as vogais (A, E, I, O, U) para crianças com jogos, desenhos e sons fofos.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF9E6",
+  "theme_color": "#FF8C94",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "./imgs/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "./imgs/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

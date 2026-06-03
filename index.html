@@ -1,27 +1,186 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 <head>
-    <meta charset="utf-8">
-    <title>VogaisApp</title>
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <script src="components/loader.js"></script>
-    <link rel="stylesheet" href="components/loader.css">
-    <link rel="stylesheet" href="css/style.css">
-    <script>
-        // PhoneGap event handler
-        document.addEventListener("deviceready", onDeviceReady, false);
-        function onDeviceReady() {
-            console.log("PhoneGap is ready");
-        }
-    </script>
+  <meta charset="utf-8">
+  <title>VogaisApp - Brincar e Aprender</title>
+  
+  <!-- Viewport and Mobile Settings -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#FF8C94">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="VogaisApp">
+  
+  <!-- Favicon and Manifest -->
+  <link rel="shortcut icon" href="favicon.png" type="image/png">
+  <link rel="apple-touch-icon" href="imgs/icon-192.png">
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <h1>Aprender Brincando!</h1>
-    <a class="button--large" href="vogais.html">Vogais</a>
-    <br>
-    <a class="button--large" href="https://www.touchdevelop.com/app/#landing:qfdgc">Animais</a>
+  <!-- Floating Confetti Canvas -->
+  <canvas id="confetti-canvas"></canvas>
 
+  <!-- Global Header -->
+  <header>
+    <div class="app-title" id="app-title">
+      <span>V</span><span>o</span><span>g</span><span>a</span><span>i</span><span>s</span><span>A</span><span>p</span><span>p</span>
+    </div>
+    <div class="header-right">
+      <button class="btn-lang" id="btn-lang-toggle">
+        <span id="lang-flag">🇧🇷</span> <span id="lang-label">PT</span>
+      </button>
+      <div class="star-counter" title="Estrelas">
+        <span class="star-icon">⭐</span>
+        <span id="stars-count">0</span>
+      </div>
+    </div>
+  </header>
 
+  <!-- Main Display Screen Container -->
+  <main>
+    
+    <!-- Global Category Selector (Hidden on Dashboard) -->
+    <div class="category-selector-row" id="category-selector" style="display: none;">
+      <button class="btn-category active" data-category="vogais" id="btn-cat-vogais">📖 Vogais</button>
+      <button class="btn-category" data-category="numeros" id="btn-cat-numeros">🔢 Números</button>
+      <button class="btn-category" data-category="cores" id="btn-cat-cores">🎨 Cores</button>
+    </div>
+
+    <!-- 1. DASHBOARD SCREEN -->
+    <section id="screen-menu" class="screen active">
+      <div class="dashboard-logo">
+        <img src="imgs/vogais.png" alt="Vogais Logo Cover">
+        <h1 id="menu-subtitle">Aprender Brincando!</h1>
+      </div>
+      
+      <div class="dashboard-menu">
+        <div class="menu-card card-learn" id="card-learn" title="Aprender">
+          <div class="card-icon">📖</div>
+          <div class="card-title" id="title-card-learn">Aprender</div>
+        </div>
+        
+        <div class="menu-card card-quiz" id="card-quiz" title="Adivinhe">
+          <div class="card-icon">🎈</div>
+          <div class="card-title" id="title-card-quiz">Qual é a Vogal?</div>
+        </div>
+        
+        <div class="menu-card card-memory" id="card-memory" title="Jogo da Memória">
+          <div class="card-icon">🧠</div>
+          <div class="card-title" id="title-card-memory">Memória</div>
+        </div>
+        
+        <div class="menu-card card-draw" id="card-draw" title="Desenhar">
+          <div class="card-icon">✏️</div>
+          <div class="card-title" id="title-card-draw">Desenhar</div>
+        </div>
+      </div>
+      
+      <!-- PWA Install Button -->
+      <button class="btn-install" id="btn-install-app">
+        <span id="label-install-btn">📲 Instalar Aplicativo</span>
+      </button>
+    </section>
+
+    <!-- 2. LEARN SCREEN -->
+    <section id="screen-learn" class="screen">
+      <div class="slide-container">
+        <div class="slide-content" id="slide-content">
+          <div class="slide-image-wrapper">
+            <img id="learn-img" src="imgs/a.png" alt="Carregando...">
+            <div id="learn-emoji-display" class="slide-emoji-display" style="display: none;">🍎</div>
+            <div class="slide-sound-indicator">🔊</div>
+          </div>
+          <div class="vowel-large" id="learn-vowel">A</div>
+          <div class="vowel-word" id="learn-word"><span>A</span> de Abelha</div>
+        </div>
+      </div>
+      
+      <div class="slider-controls">
+        <button class="btn-circle" id="btn-learn-prev" title="Anterior">◀</button>
+        <div class="slide-dots" id="learn-dots"></div>
+        <button class="btn-circle" id="btn-learn-next" title="Próximo">▶</button>
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <button class="btn-action btn-back-nav btn-back-text">🏠 Voltar</button>
+      </div>
+    </section>
+
+    <!-- 3. QUIZ SCREEN -->
+    <section id="screen-quiz" class="screen">
+      <div class="quiz-box">
+        <button class="btn-speaker" id="btn-quiz-audio" title="Ouvir som">🔊</button>
+        <h2 id="quiz-question-prompt" style="margin-bottom: 20px; font-size: 22px;">Qual vogal você ouviu?</h2>
+        
+        <div class="balloons-area" id="balloons-area">
+          <!-- Dynamic balloons will render here -->
+        </div>
+      </div>
+      
+      <div style="margin-top: 30px;">
+        <button class="btn-action btn-back-nav btn-back-text">🏠 Voltar</button>
+      </div>
+    </section>
+
+    <!-- 4. MEMORY GAME SCREEN -->
+    <section id="screen-memory" class="screen">
+      <div style="position: relative; width: 100%; display: flex; flex-direction: column; align-items: center;">
+        
+        <!-- Win banner overlay -->
+        <div class="win-banner" id="memory-win-banner">
+          <h2 id="win-banner-title">⭐ Incrível! ⭐</h2>
+          <p id="win-banner-body">Você encontrou todos os pares!</p>
+          <button class="btn-action" id="btn-memory-restart">Jogar de Novo</button>
+        </div>
+
+        <div class="memory-grid" id="memory-grid">
+          <!-- Cards will render here -->
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <button class="btn-action btn-back-nav btn-back-text">🏠 Voltar</button>
+      </div>
+    </section>
+
+    <!-- 5. DRAWING SCREEN -->
+    <section id="screen-draw" class="screen">
+      <div class="draw-selector" id="draw-letter-selector">
+        <!-- Letter select buttons -->
+      </div>
+      
+      <div class="canvas-container">
+        <canvas id="drawing-canvas"></canvas>
+      </div>
+      
+      <div class="draw-tools">
+        <div class="color-palette">
+          <div class="color-pen active" style="background-color: #FF6B6B;" data-color="#FF6B6B" title="Vermelho"></div>
+          <div class="color-pen" style="background-color: #FFD32D;" data-color="#FFD32D" title="Amarelo"></div>
+          <div class="color-pen" style="background-color: #2ECC71;" data-color="#2ECC71" title="Verde"></div>
+          <div class="color-pen" style="background-color: #4DABF7;" data-color="#4DABF7" title="Azul"></div>
+          <div class="color-pen" style="background-color: #9B59B6;" data-color="#9B59B6" title="Roxo"></div>
+        </div>
+        
+        <div style="display: flex; gap: 8px;">
+          <button class="btn-action" id="btn-draw-sound" style="background-color: #FFD32D; box-shadow: 0 4px 0 #DAB31B; color: #555;">🔊</button>
+          <button class="btn-action" id="btn-draw-clear" style="background-color: #E2E8F0; color: #4A5568; box-shadow: 0 4px 0 #CBD5E0;">Limpar</button>
+        </div>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <button class="btn-action btn-back-nav btn-back-text">🏠 Voltar</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Core Javascript -->
+  <script src="js/app.js"></script>
 </body>
 </html>
