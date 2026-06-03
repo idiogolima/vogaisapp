@@ -1,4 +1,4 @@
-const CACHE_NAME = "vogaisapp-v3";
+const CACHE_NAME = "vogaisapp-v4";
 const ASSETS = [
   "./",
   "./index.html",
@@ -14,6 +14,31 @@ const ASSETS = [
   "./imgs/vogais.png",
   "./imgs/icon-192.png",
   "./imgs/icon-512.png",
+  "./imgs/generated/pt_vogais_a.png",
+  "./imgs/generated/pt_vogais_e.png",
+  "./imgs/generated/pt_vogais_i.png",
+  "./imgs/generated/pt_vogais_o.png",
+  "./imgs/generated/pt_vogais_u.png",
+  "./imgs/generated/en_vogais_a.png",
+  "./imgs/generated/en_vogais_e.png",
+  "./imgs/generated/en_vogais_i.png",
+  "./imgs/generated/en_vogais_o.png",
+  "./imgs/generated/en_vogais_u.png",
+  "./imgs/generated/shared_numeros_1.png",
+  "./imgs/generated/shared_numeros_2.png",
+  "./imgs/generated/shared_numeros_3.png",
+  "./imgs/generated/shared_numeros_4.png",
+  "./imgs/generated/shared_numeros_5.png",
+  "./imgs/generated/shared_numeros_6.png",
+  "./imgs/generated/shared_numeros_7.png",
+  "./imgs/generated/shared_numeros_8.png",
+  "./imgs/generated/shared_numeros_9.png",
+  "./imgs/generated/shared_numeros_10.png",
+  "./imgs/generated/shared_cores_red.png",
+  "./imgs/generated/shared_cores_green.png",
+  "./imgs/generated/shared_cores_blue.png",
+  "./imgs/generated/shared_cores_yellow.png",
+  "./imgs/generated/shared_cores_purple.png",
   
   // High quality PT Vowel audios
   "./sounds/pt_vogais_a.mp3",

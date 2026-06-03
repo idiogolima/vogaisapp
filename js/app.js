@@ -10,6 +10,9 @@ let memoryFlippedCards = [];
 let memoryLock = false;
 let memoryMatches = 0;
 let installPromptEvent = null;
+let learnAutoplayTimer = null;
+let quizPromptTimer = null;
+let quizAdvanceTimer = null;
 
 // Audio Preload Cache
 const AUDIO_CACHE = {};
@@ -29,58 +32,58 @@ let confettiParticles = [];
 const CONTENT_DATA = {
   pt: {
     vogais: [
-      { char: 'A', name: 'Abelha', type: 'image', value: 'imgs/a.png', color: 'var(--color-a)', phrase: 'A de Abelha' },
-      { char: 'E', name: 'Elefante', type: 'image', value: 'imgs/e.png', color: 'var(--color-e)', phrase: 'E de Elefante' },
-      { char: 'I', name: 'Iguana', type: 'image', value: 'imgs/i.png', color: 'var(--color-i)', phrase: 'I de Iguana' },
-      { char: 'O', name: 'Ovelha', type: 'image', value: 'imgs/o.png', color: 'var(--color-o)', phrase: 'O de Ovelha' },
-      { char: 'U', name: 'Urso', type: 'image', value: 'imgs/u.png', color: 'var(--color-u)', phrase: 'U de Urso' }
+      { char: 'A', name: 'Abelha', type: 'image', value: 'imgs/generated/pt_vogais_a.png', color: 'var(--color-a)', phrase: 'A de Abelha' },
+      { char: 'E', name: 'Elefante', type: 'image', value: 'imgs/generated/pt_vogais_e.png', color: 'var(--color-e)', phrase: 'E de Elefante' },
+      { char: 'I', name: 'Iguana', type: 'image', value: 'imgs/generated/pt_vogais_i.png', color: 'var(--color-i)', phrase: 'I de Iguana' },
+      { char: 'O', name: 'Ovelha', type: 'image', value: 'imgs/generated/pt_vogais_o.png', color: 'var(--color-o)', phrase: 'O de Ovelha' },
+      { char: 'U', name: 'Urso', type: 'image', value: 'imgs/generated/pt_vogais_u.png', color: 'var(--color-u)', phrase: 'U de Urso' }
     ],
     numeros: [
-      { char: '1', name: 'Uma Maçã', type: 'emoji', value: '🍎', color: '#FFEBF0' },
-      { char: '2', name: 'Duas Bananas', type: 'emoji', value: '🍌🍌', color: '#FFFDF0' },
-      { char: '3', name: 'Três Peixes', type: 'emoji', value: '🐟🐟🐟', color: '#E3F2FD' },
-      { char: '4', name: 'Quatro Estrelas', type: 'emoji', value: '⭐⭐⭐⭐', color: '#FFFDE7' },
-      { char: '5', name: 'Cinco Flores', type: 'emoji', value: '🌸🌸🌸🌸🌸', color: '#FCE7F3' },
-      { char: '6', name: 'Seis Borboletas', type: 'emoji', value: '🦋🦋🦋🦋🦋🦋', color: '#EAFDF5' },
-      { char: '7', name: 'Sete Bolas', type: 'emoji', value: '⚽⚽⚽⚽⚽⚽⚽', color: '#F3F4F6' },
-      { char: '8', name: 'Oito Balões', type: 'emoji', value: '🎈🎈🎈🎈🎈🎈🎈🎈', color: '#FFF1F2' },
-      { char: '9', name: 'Nove Carros', type: 'emoji', value: '🚗🚗🚗🚗🚗🚗🚗🚗🚗', color: '#ECFDF5' },
-      { char: '10', name: 'Dez Doces', type: 'emoji', value: '🍬🍬🍬🍬🍬🍬🍬🍬🍬🍬', color: '#FDF2F8' }
+      { char: '1', name: 'Uma Maçã', type: 'image', value: 'imgs/generated/shared_numeros_1.png', color: '#FFEBF0' },
+      { char: '2', name: 'Duas Bananas', type: 'image', value: 'imgs/generated/shared_numeros_2.png', color: '#FFFDF0' },
+      { char: '3', name: 'Três Peixes', type: 'image', value: 'imgs/generated/shared_numeros_3.png', color: '#E3F2FD' },
+      { char: '4', name: 'Quatro Estrelas', type: 'image', value: 'imgs/generated/shared_numeros_4.png', color: '#FFFDE7' },
+      { char: '5', name: 'Cinco Flores', type: 'image', value: 'imgs/generated/shared_numeros_5.png', color: '#FCE7F3' },
+      { char: '6', name: 'Seis Borboletas', type: 'image', value: 'imgs/generated/shared_numeros_6.png', color: '#EAFDF5' },
+      { char: '7', name: 'Sete Bolas', type: 'image', value: 'imgs/generated/shared_numeros_7.png', color: '#F3F4F6' },
+      { char: '8', name: 'Oito Balões', type: 'image', value: 'imgs/generated/shared_numeros_8.png', color: '#FFF1F2' },
+      { char: '9', name: 'Nove Carros', type: 'image', value: 'imgs/generated/shared_numeros_9.png', color: '#ECFDF5' },
+      { char: '10', name: 'Dez Doces', type: 'image', value: 'imgs/generated/shared_numeros_10.png', color: '#FDF2F8' }
     ],
     cores: [
-      { char: 'Vermelho', name: 'Coração', type: 'color', value: '#FF3B30', emoji: '❤️', color: '#FFEBEE', phrase: 'O coração é vermelho' },
-      { char: 'Verde', name: 'Folha', type: 'color', value: '#2ECC71', emoji: '🍃', color: '#E8F5E9', phrase: 'A folha é verde' },
-      { char: 'Azul', name: 'Nuvem', type: 'color', value: '#4DABF7', emoji: '☁️', color: '#E3F2FD', phrase: 'A nuvem é azul' },
-      { char: 'Amarelo', name: 'Sol', type: 'color', value: '#FFD32D', emoji: '☀️', color: '#FFFDE7', phrase: 'O sol é amarelo' },
-      { char: 'Roxo', name: 'Uva', type: 'color', value: '#9B59B6', emoji: '🍇', color: '#F3E5F5', phrase: 'A uva é roxa' }
+      { char: 'Vermelho', name: 'Coração', type: 'image', value: 'imgs/generated/shared_cores_red.png', emoji: '❤️', color: '#FFEBEE', phrase: 'O coração é vermelho' },
+      { char: 'Verde', name: 'Folha', type: 'image', value: 'imgs/generated/shared_cores_green.png', emoji: '🍃', color: '#E8F5E9', phrase: 'A folha é verde' },
+      { char: 'Azul', name: 'Nuvem', type: 'image', value: 'imgs/generated/shared_cores_blue.png', emoji: '☁️', color: '#E3F2FD', phrase: 'A nuvem é azul' },
+      { char: 'Amarelo', name: 'Sol', type: 'image', value: 'imgs/generated/shared_cores_yellow.png', emoji: '☀️', color: '#FFFDE7', phrase: 'O sol é amarelo' },
+      { char: 'Roxo', name: 'Uva', type: 'image', value: 'imgs/generated/shared_cores_purple.png', emoji: '🍇', color: '#F3E5F5', phrase: 'A uva é roxa' }
     ]
   },
   en: {
     vogais: [
-      { char: 'A', name: 'Apple', type: 'emoji', value: '🍎', color: 'var(--color-a)', phrase: 'A for Apple' },
-      { char: 'E', name: 'Elephant', type: 'emoji', value: '🐘', color: 'var(--color-e)', phrase: 'E for Elephant' },
-      { char: 'I', name: 'Iguana', type: 'emoji', value: '🦎', color: 'var(--color-i)', phrase: 'I for Iguana' },
-      { char: 'O', name: 'Octopus', type: 'emoji', value: '🐙', color: 'var(--color-o)', phrase: 'O for Octopus' },
-      { char: 'U', name: 'Unicorn', type: 'emoji', value: '🦄', color: 'var(--color-u)', phrase: 'U for Unicorn' }
+      { char: 'A', name: 'Apple', type: 'image', value: 'imgs/generated/en_vogais_a.png', color: 'var(--color-a)', phrase: 'A for Apple' },
+      { char: 'E', name: 'Elephant', type: 'image', value: 'imgs/generated/en_vogais_e.png', color: 'var(--color-e)', phrase: 'E for Elephant' },
+      { char: 'I', name: 'Iguana', type: 'image', value: 'imgs/generated/en_vogais_i.png', color: 'var(--color-i)', phrase: 'I for Iguana' },
+      { char: 'O', name: 'Octopus', type: 'image', value: 'imgs/generated/en_vogais_o.png', color: 'var(--color-o)', phrase: 'O for Octopus' },
+      { char: 'U', name: 'Unicorn', type: 'image', value: 'imgs/generated/en_vogais_u.png', color: 'var(--color-u)', phrase: 'U for Unicorn' }
     ],
     numeros: [
-      { char: '1', name: 'One Apple', type: 'emoji', value: '🍎', color: '#FFEBF0' },
-      { char: '2', name: 'Two Bananas', type: 'emoji', value: '🍌🍌', color: '#FFFDF0' },
-      { char: '3', name: 'Three Fish', type: 'emoji', value: '🐟🐟🐟', color: '#E3F2FD' },
-      { char: '4', name: 'Four Stars', type: 'emoji', value: '⭐⭐⭐⭐', color: '#FFFDE7' },
-      { char: '5', name: 'Five Flowers', type: 'emoji', value: '🌸🌸🌸🌸🌸', color: '#FCE7F3' },
-      { char: '6', name: 'Six Butterflies', type: 'emoji', value: '🦋🦋🦋🦋🦋🦋', color: '#EAFDF5' },
-      { char: '7', name: 'Seven Balls', type: 'emoji', value: '⚽⚽⚽⚽⚽⚽⚽', color: '#F3F4F6' },
-      { char: '8', name: 'Eight Balloons', type: 'emoji', value: '🎈🎈🎈🎈🎈🎈🎈🎈', color: '#FFF1F2' },
-      { char: '9', name: 'Nine Cars', type: 'emoji', value: '🚗🚗🚗🚗🚗🚗🚗🚗🚗', color: '#ECFDF5' },
-      { char: '10', name: 'Ten Candies', type: 'emoji', value: '🍬🍬🍬🍬🍬🍬🍬🍬🍬🍬', color: '#FDF2F8' }
+      { char: '1', name: 'One Apple', type: 'image', value: 'imgs/generated/shared_numeros_1.png', color: '#FFEBF0' },
+      { char: '2', name: 'Two Bananas', type: 'image', value: 'imgs/generated/shared_numeros_2.png', color: '#FFFDF0' },
+      { char: '3', name: 'Three Fish', type: 'image', value: 'imgs/generated/shared_numeros_3.png', color: '#E3F2FD' },
+      { char: '4', name: 'Four Stars', type: 'image', value: 'imgs/generated/shared_numeros_4.png', color: '#FFFDE7' },
+      { char: '5', name: 'Five Flowers', type: 'image', value: 'imgs/generated/shared_numeros_5.png', color: '#FCE7F3' },
+      { char: '6', name: 'Six Butterflies', type: 'image', value: 'imgs/generated/shared_numeros_6.png', color: '#EAFDF5' },
+      { char: '7', name: 'Seven Balls', type: 'image', value: 'imgs/generated/shared_numeros_7.png', color: '#F3F4F6' },
+      { char: '8', name: 'Eight Balloons', type: 'image', value: 'imgs/generated/shared_numeros_8.png', color: '#FFF1F2' },
+      { char: '9', name: 'Nine Cars', type: 'image', value: 'imgs/generated/shared_numeros_9.png', color: '#ECFDF5' },
+      { char: '10', name: 'Ten Candies', type: 'image', value: 'imgs/generated/shared_numeros_10.png', color: '#FDF2F8' }
     ],
     cores: [
-      { char: 'Red', name: 'Heart', type: 'color', value: '#FF3B30', emoji: '❤️', color: '#FFEBEE', phrase: 'The heart is red' },
-      { char: 'Green', name: 'Leaf', type: 'color', value: '#2ECC71', emoji: '🍃', color: '#E8F5E9', phrase: 'The leaf is green' },
-      { char: 'Blue', name: 'Cloud', type: 'color', value: '#4DABF7', emoji: '☁️', color: '#E3F2FD', phrase: 'The cloud is blue' },
-      { char: 'Yellow', name: 'Sun', type: 'color', value: '#FFD32D', emoji: '☀️', color: '#FFFDE7', phrase: 'The sun is yellow' },
-      { char: 'Purple', name: 'Grape', type: 'color', value: '#9B59B6', emoji: '🍇', color: '#F3E5F5', phrase: 'The grape is purple' }
+      { char: 'Red', name: 'Heart', type: 'image', value: 'imgs/generated/shared_cores_red.png', emoji: '❤️', color: '#FFEBEE', phrase: 'The heart is red' },
+      { char: 'Green', name: 'Leaf', type: 'image', value: 'imgs/generated/shared_cores_green.png', emoji: '🍃', color: '#E8F5E9', phrase: 'The leaf is green' },
+      { char: 'Blue', name: 'Cloud', type: 'image', value: 'imgs/generated/shared_cores_blue.png', emoji: '☁️', color: '#E3F2FD', phrase: 'The cloud is blue' },
+      { char: 'Yellow', name: 'Sun', type: 'image', value: 'imgs/generated/shared_cores_yellow.png', color: '#FFFDE7', phrase: 'The sun is yellow', emoji: '☀️' },
+      { char: 'Purple', name: 'Grape', type: 'image', value: 'imgs/generated/shared_cores_purple.png', emoji: '🍇', color: '#F3E5F5', phrase: 'The grape is purple' }
     ]
   }
 };
@@ -177,6 +180,7 @@ function setupLanguage() {
 
 function applyTranslations() {
   const t = UI_TRANSLATIONS[currentLang];
+  document.documentElement.lang = currentLang === "pt" ? "pt-BR" : "en-US";
   
   // Header flag
   document.getElementById("lang-flag").textContent = currentLang === "pt" ? "🇧🇷" : "🇺🇸";
@@ -233,6 +237,8 @@ function setupCategorySelector() {
 
 // Refresh whatever game mode is currently running on screen
 function refreshActiveScreenGame() {
+  clearPendingPlayback();
+
   const activeScreen = document.querySelector(".screen.active");
   if (!activeScreen) return;
   
@@ -246,6 +252,7 @@ function refreshActiveScreenGame() {
     startNewMemoryGame();
   } else if (id === "screen-draw") {
     const items = CONTENT_DATA[currentLang][currentCategory];
+    resizeDrawCanvas();
     changeDrawingItem(items[0].char);
     setupLetterDrawingMenu();
   }
@@ -278,11 +285,27 @@ function setupNavigation() {
 }
 
 function showScreen(screenId) {
+  clearPendingPlayback();
   document.querySelectorAll(".screen").forEach(scr => scr.classList.remove("active"));
   document.getElementById(screenId).classList.add("active");
   
   if (screenId === "screen-menu") {
     document.getElementById("category-selector").style.display = "none";
+  }
+}
+
+function clearPendingPlayback() {
+  if (learnAutoplayTimer) {
+    clearTimeout(learnAutoplayTimer);
+    learnAutoplayTimer = null;
+  }
+  if (quizPromptTimer) {
+    clearTimeout(quizPromptTimer);
+    quizPromptTimer = null;
+  }
+  if (quizAdvanceTimer) {
+    clearTimeout(quizAdvanceTimer);
+    quizAdvanceTimer = null;
   }
 }
 
@@ -444,6 +467,10 @@ function setupLearnMode() {
 }
 
 function renderLearnSlide() {
+  if (learnAutoplayTimer) {
+    clearTimeout(learnAutoplayTimer);
+  }
+
   const items = CONTENT_DATA[currentLang][currentCategory];
   const item = items[currentLearnIndex];
   
@@ -509,7 +536,7 @@ function renderLearnSlide() {
   });
 
   // Autoplay current vowel/number/color
-  setTimeout(() => {
+  learnAutoplayTimer = setTimeout(() => {
     playAudioOrSpeech(item.char, currentLang, currentCategory);
   }, 400);
 }
@@ -526,6 +553,13 @@ function setupQuizMode() {
 }
 
 function startNewQuizQuestion() {
+  if (quizPromptTimer) {
+    clearTimeout(quizPromptTimer);
+  }
+  if (quizAdvanceTimer) {
+    clearTimeout(quizAdvanceTimer);
+  }
+
   const balloonsArea = document.getElementById("balloons-area");
   balloonsArea.innerHTML = "";
   
@@ -579,7 +613,7 @@ function startNewQuizQuestion() {
         
         document.querySelectorAll(".balloon").forEach(b => b.style.pointerEvents = "none");
         
-        setTimeout(() => {
+        quizAdvanceTimer = setTimeout(() => {
           stopConfetti();
           startNewQuizQuestion();
         }, 1800);
@@ -595,7 +629,7 @@ function startNewQuizQuestion() {
   });
   
   // Voice prompt play
-  setTimeout(() => {
+  quizPromptTimer = setTimeout(() => {
     playAudioOrSpeech(quizCorrectItem.char, currentLang, currentCategory);
   }, 400);
 }
