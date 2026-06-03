@@ -11,6 +11,9 @@ let memoryLock = false;
 let memoryMatches = 0;
 let installPromptEvent = null;
 
+// Audio Preload Cache
+const AUDIO_CACHE = {};
+
 // Drawing state
 let drawCanvas, drawCtx;
 let isDrawing = false;
@@ -138,6 +141,9 @@ window.addEventListener("load", () => {
   setupMemoryMode();
   setupDrawingMode();
   setupPWA();
+  
+  // Preload all 40 MP3 files for instant playback
+  preloadAllAudios();
   
   // Render initial translations
   applyTranslations();
@@ -280,26 +286,56 @@ function showScreen(screenId) {
   }
 }
 
+// Preload all 40 MP3 files for instant latency-free plays
+function preloadAllAudios() {
+  const languages = ["pt", "en"];
+  const categories = ["vogais", "numeros", "cores"];
+  
+  languages.forEach(lang => {
+    categories.forEach(cat => {
+      const items = CONTENT_DATA[lang][cat];
+      items.forEach(item => {
+        const key = `${lang}_${cat}_${item.char.toLowerCase()}`;
+        const audio = new Audio(`./sounds/${key}.mp3`);
+        audio.preload = "auto";
+        audio.load();
+        AUDIO_CACHE[key] = audio;
+      });
+    });
+  });
+}
+
 // ----------------------------------------------------
-// Text to Speech & Audio Engine (With Studio MP3 files)
+// Text to Speech & Audio Engine (With preloaded cache)
 // ----------------------------------------------------
 function playAudioOrSpeech(charVal, lang, category) {
-  // Construct filename pointing to Google TTS downloaded high quality MP3
-  const filename = `./sounds/${lang}_${category}_${charVal.toString().toLowerCase()}.mp3`;
-  const audio = new Audio(filename);
+  const key = `${lang}_${category}_${charVal.toString().toLowerCase()}`;
+  const cachedAudio = AUDIO_CACHE[key];
   
-  audio.play().catch(err => {
-    console.warn("High-quality local audio file play failed, using fallback SpeechSynthesis:", filename, err);
-    // Find the item in CONTENT_DATA
-    const items = CONTENT_DATA[lang][category];
-    const item = items.find(x => x.char.toString().toLowerCase() === charVal.toString().toLowerCase());
-    if (item) {
-      const speechVal = category === "vogais" ? item.phrase : (category === "numeros" ? item.name : item.phrase);
-      speakText(speechVal, lang);
-    } else {
-      speakText(charVal, lang);
-    }
-  });
+  if (cachedAudio) {
+    // Reset playhead and play instantly
+    cachedAudio.currentTime = 0;
+    cachedAudio.play().catch(err => {
+      console.warn("Cached audio play failed, using SpeechSynthesis fallback:", err);
+      triggerSpeechFallback(charVal, lang, category);
+    });
+  } else {
+    // Direct load fallback
+    const filename = `./sounds/${key}.mp3`;
+    const audio = new Audio(filename);
+    audio.play().catch(err => triggerSpeechFallback(charVal, lang, category));
+  }
+}
+
+function triggerSpeechFallback(charVal, lang, category) {
+  const items = CONTENT_DATA[lang][category];
+  const item = items.find(x => x.char.toString().toLowerCase() === charVal.toString().toLowerCase());
+  if (item) {
+    const speechVal = category === "vogais" ? item.phrase : (category === "numeros" ? item.name : item.phrase);
+    speakText(speechVal, lang);
+  } else {
+    speakText(charVal, lang);
+  }
 }
 
 function speakText(text, langCode) {
@@ -385,7 +421,7 @@ function setupLearnMode() {
     const items = CONTENT_DATA[currentLang][currentCategory];
     const item = items[currentLearnIndex];
     
-    // Play sound from high quality pre-recorded files
+    // Play sound from preloaded cache
     playAudioOrSpeech(item.char, currentLang, currentCategory);
     
     // Mini animation
