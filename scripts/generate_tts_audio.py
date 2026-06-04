@@ -11,21 +11,21 @@ ROOT = Path(__file__).resolve().parents[1]
 SOUNDS_DIR = ROOT / "sounds"
 
 VOICE_CONFIG = {
-    "pt": {"voice": "Flo (Português (Brasil))", "rate": "155"},
-    "en": {"voice": "Flo (Inglês (EUA))", "rate": "150"},
+    "pt": {"voice": "Flo (Português (Brasil))", "rate": "136"},
+    "en": {"voice": "Flo (Inglês (EUA))", "rate": "142"},
 }
 
 LINES = {
-    "pt_vogais_a.mp3": ("pt", "A de abelha"),
-    "pt_vogais_e.mp3": ("pt", "E de elefante"),
-    "pt_vogais_i.mp3": ("pt", "I de iguana"),
-    "pt_vogais_o.mp3": ("pt", "O de ovelha"),
-    "pt_vogais_u.mp3": ("pt", "U de urso"),
-    "en_vogais_a.mp3": ("en", "A for apple"),
-    "en_vogais_e.mp3": ("en", "E for elephant"),
-    "en_vogais_i.mp3": ("en", "I for iguana"),
-    "en_vogais_o.mp3": ("en", "O for octopus"),
-    "en_vogais_u.mp3": ("en", "U for unicorn"),
+    "pt_vogais_a.mp3": ("pt", "A, de abelha"),
+    "pt_vogais_e.mp3": ("pt", "E, de elefante"),
+    "pt_vogais_i.mp3": ("pt", "I, de iguana"),
+    "pt_vogais_o.mp3": ("pt", "O, de ovelha"),
+    "pt_vogais_u.mp3": ("pt", "U, de urso"),
+    "en_vogais_a.mp3": ("en", "A, for apple"),
+    "en_vogais_e.mp3": ("en", "E, for elephant"),
+    "en_vogais_i.mp3": ("en", "I, for iguana"),
+    "en_vogais_o.mp3": ("en", "O, for octopus"),
+    "en_vogais_u.mp3": ("en", "U, for unicorn"),
     "pt_numeros_1.mp3": ("pt", "Uma maçã"),
     "pt_numeros_2.mp3": ("pt", "Duas bananas"),
     "pt_numeros_3.mp3": ("pt", "Três peixes"),

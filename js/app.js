@@ -16,6 +16,7 @@ let quizAdvanceTimer = null;
 
 // Audio Preload Cache
 const AUDIO_CACHE = {};
+let activeAudio = null;
 
 // Drawing state
 let drawCanvas, drawCtx;
@@ -307,6 +308,16 @@ function clearPendingPlayback() {
     clearTimeout(quizAdvanceTimer);
     quizAdvanceTimer = null;
   }
+
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+    activeAudio = null;
+  }
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
 }
 
 // Preload all 40 MP3 files for instant latency-free plays
@@ -334,19 +345,55 @@ function preloadAllAudios() {
 function playAudioOrSpeech(charVal, lang, category) {
   const key = `${lang}_${category}_${charVal.toString().toLowerCase()}`;
   const cachedAudio = AUDIO_CACHE[key];
-  
+
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio.currentTime = 0;
+    activeAudio = null;
+  }
+
+  if ("speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+
   if (cachedAudio) {
-    // Reset playhead and play instantly
-    cachedAudio.currentTime = 0;
-    cachedAudio.play().catch(err => {
+    // Use a fresh instance to avoid clipped starts on quick replays/mobile Safari.
+    const playbackAudio = cachedAudio.cloneNode(true);
+    playbackAudio.preload = "auto";
+    activeAudio = playbackAudio;
+    playbackAudio.addEventListener("ended", () => {
+      if (activeAudio === playbackAudio) {
+        activeAudio = null;
+      }
+    }, { once: true });
+    playbackAudio.addEventListener("pause", () => {
+      if (playbackAudio.ended) return;
+      if (activeAudio === playbackAudio && playbackAudio.currentTime === 0) {
+        activeAudio = null;
+      }
+    });
+    playbackAudio.play().catch(err => {
+      if (activeAudio === playbackAudio) {
+        activeAudio = null;
+      }
       console.warn("Cached audio play failed, using SpeechSynthesis fallback:", err);
       triggerSpeechFallback(charVal, lang, category);
     });
   } else {
-    // Direct load fallback
     const filename = `./sounds/${key}.mp3`;
-    const audio = new Audio(filename);
-    audio.play().catch(err => triggerSpeechFallback(charVal, lang, category));
+    const playbackAudio = new Audio(filename);
+    activeAudio = playbackAudio;
+    playbackAudio.addEventListener("ended", () => {
+      if (activeAudio === playbackAudio) {
+        activeAudio = null;
+      }
+    }, { once: true });
+    playbackAudio.play().catch(() => {
+      if (activeAudio === playbackAudio) {
+        activeAudio = null;
+      }
+      triggerSpeechFallback(charVal, lang, category);
+    });
   }
 }
 
